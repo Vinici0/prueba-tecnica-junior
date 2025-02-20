@@ -1,7 +1,7 @@
 package org.borja.springcloud.msvc.usuarios.controllers;
 
 import org.borja.springcloud.msvc.usuarios.models.Movimiento;
-import org.borja.springcloud.msvc.usuarios.services.MovimientoService;
+import org.borja.springcloud.msvc.usuarios.services.movimiento.MovimientoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/movimientos")
+@RequestMapping("${api.prefix}/movimientos")
 public class MovimientoController {
 
     @Autowired

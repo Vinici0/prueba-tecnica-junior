@@ -1,6 +1,5 @@
-package org.borja.springcloud.msvc.usuarios.services;
+package org.borja.springcloud.msvc.usuarios.services.movimiento;
 
-import org.borja.springcloud.msvc.usuarios.exceptions.InsufficientFundsException;
 import org.borja.springcloud.msvc.usuarios.exceptions.ResourceNotFoundException;
 import org.borja.springcloud.msvc.usuarios.exceptions.SaldoInsuficienteException;
 import org.borja.springcloud.msvc.usuarios.models.Cuenta;
@@ -8,9 +7,7 @@ import org.borja.springcloud.msvc.usuarios.models.Movimiento;
 import org.borja.springcloud.msvc.usuarios.repositories.CuentaRepository;
 import org.borja.springcloud.msvc.usuarios.repositories.MovimientoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDate;
 import java.util.List;

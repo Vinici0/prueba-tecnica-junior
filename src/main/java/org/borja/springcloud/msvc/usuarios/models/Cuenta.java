@@ -1,8 +1,6 @@
 package org.borja.springcloud.msvc.usuarios.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,4 +19,8 @@ public class Cuenta {
     private String tipoCuenta;
     private Double saldoInicial;
     private Boolean estado;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id", nullable = false)
+    private Cliente cliente;
 }
