@@ -21,7 +21,6 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
-
     public ClienteResponseDto crearCliente(ClienteRequestDto clienteDto) {
         Cliente cliente = convertToEntity(clienteDto);
         Cliente savedCliente = clienteRepository.save(cliente);
