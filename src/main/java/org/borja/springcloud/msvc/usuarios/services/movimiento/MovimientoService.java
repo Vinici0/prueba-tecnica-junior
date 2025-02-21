@@ -80,7 +80,7 @@ public class MovimientoService {
                 .filter(c -> c.getCliente().getId().equals(clienteId))
                 .collect(Collectors.toList());
 
-        // 2. Para cada cuenta, buscar movimientos en el rango
+
         List<ReporteDto.CuentaDto> listaCuentasDto = cuentasCliente.stream().map(c -> {
             List<Movimiento> movimientosEnRango = movimientoRepository.findAll()
                     .stream()
@@ -88,7 +88,7 @@ public class MovimientoService {
                     .filter(m -> !m.getFecha().isBefore(fechaInicio) && !m.getFecha().isAfter(fechaFin))
                     .collect(Collectors.toList());
 
-            // Convertir movimientos a DTO
+
             List<ReporteDto.MovimientoDto> movimientosDto = movimientosEnRango.stream().map(mov ->
                     ReporteDto.MovimientoDto.builder()
                             .fecha(mov.getFecha())
