@@ -1,5 +1,7 @@
 package org.borja.springcloud.msvc.usuarios.models;
 
+import org.borja.springcloud.msvc.usuarios.models.enums.TipoCuenta;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +18,9 @@ public class Cuenta {
     @Id
     private String numeroCuenta;
 
-    private String tipoCuenta;
+    @Enumerated(EnumType.STRING)
+    private TipoCuenta tipoCuenta;
+
     private Double saldoInicial;
     private Boolean estado;
 

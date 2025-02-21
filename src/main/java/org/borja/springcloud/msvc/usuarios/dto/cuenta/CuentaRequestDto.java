@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Data;
+import org.borja.springcloud.msvc.usuarios.models.enums.TipoCuenta;
 
 @Data
 @Builder
@@ -13,8 +14,8 @@ public class CuentaRequestDto {
     @NotBlank
     private String numeroCuenta;
 
-    @NotBlank
-    private String tipoCuenta;
+    @NotNull
+    private TipoCuenta tipoCuenta;
 
     @NotNull
     private Double saldoInicial;
