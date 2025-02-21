@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my-app
+    ports:
+      - "9090:9090"
+    environment:
+
+      SPRING_APPLICATION_NAME: "msvc_users"
+      SERVER_PORT: "9090"
+      API_PREFIX: "/api"
+
+
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "prueba_tecnica"
+      DB_USERNAME: "root"
+      DB_PASSWORD: "root"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_data
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "prueba_tecnica"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

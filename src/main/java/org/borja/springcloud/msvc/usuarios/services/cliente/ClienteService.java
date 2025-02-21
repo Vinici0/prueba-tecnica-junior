@@ -2,10 +2,13 @@ package org.borja.springcloud.msvc.usuarios.services.cliente;
 
 import org.borja.springcloud.msvc.usuarios.dto.cliente.ClienteRequestDto;
 import org.borja.springcloud.msvc.usuarios.dto.cliente.ClienteResponseDto;
+import org.borja.springcloud.msvc.usuarios.exceptions.DuplicateKeyException;
 import org.borja.springcloud.msvc.usuarios.exceptions.ResourceNotFoundException;
 import org.borja.springcloud.msvc.usuarios.models.Cliente;
 import org.borja.springcloud.msvc.usuarios.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +18,8 @@ import java.util.stream.Collectors;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
 
     @Autowired
     public ClienteService(ClienteRepository clienteRepository) {
@@ -23,10 +28,13 @@ public class ClienteService {
 
     public ClienteResponseDto crearCliente(ClienteRequestDto clienteDto) {
         Cliente cliente = convertToEntity(clienteDto);
+        if (clienteRepository.findByClienteId(clienteDto.getClienteId()).isPresent()) {
+            throw new DuplicateKeyException("Ya existe un cliente con el ID: " + clienteDto.getClienteId());
+        }
+        cliente.setContrasena(passwordEncoder.encode(cliente.getContrasena()));
         Cliente savedCliente = clienteRepository.save(cliente);
         return convertToDto(savedCliente);
     }
-
 
     public List<ClienteResponseDto> obtenerTodos() {
         return clienteRepository.findAll()
@@ -48,6 +56,9 @@ public class ClienteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
 
         updateEntityFromDto(clienteExistente, clienteDto);
+        if (clienteDto.getContrasena() != null && !clienteDto.getContrasena().isEmpty()) {
+            clienteExistente.setContrasena(passwordEncoder.encode(clienteDto.getContrasena()));
+        }
         Cliente savedCliente = clienteRepository.save(clienteExistente);
         return convertToDto(savedCliente);
     }
