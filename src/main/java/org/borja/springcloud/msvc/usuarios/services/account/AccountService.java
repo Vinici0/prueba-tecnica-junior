@@ -37,7 +37,7 @@ public class AccountService implements IAccountService {
     @Transactional
     public AccountResponseDto addAccount(AccountRequestDto accountDto) {
         log.info("Adding new account for client ID: {}", accountDto.getClientId());
-        Client client = clientRepository.findByClientIdAndStatus(accountDto.getClientId(), true)
+        Client client = clientRepository.findByIdAndStatus(accountDto.getClientId(), true)
                 .orElseThrow(() -> {
                     log.warn("Client not found with ID: {}", accountDto.getClientId());
                     return new ResourceNotFoundException("Client not found with ID: " + accountDto.getClientId());

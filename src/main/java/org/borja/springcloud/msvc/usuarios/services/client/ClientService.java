@@ -1,6 +1,5 @@
 package org.borja.springcloud.msvc.usuarios.services.client;
 
-
 // Java core imports
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +31,14 @@ public class ClientService implements IClientService {
 
     @Override
     public ClientResponseDto addClient(ClientRequestDto clientDto) {
+        List<Client> existingClients = clientRepository.findByIdentification(clientDto.getIdentification());
+
+        if (!existingClients.isEmpty()) {
+            log.warn("Client already exists with identification: {}", clientDto.getIdentification());
+            throw new ResourceNotFoundException(
+                    "Cliente ya existe con identificación: " + clientDto.getIdentification());
+        }
+
         log.info("Adding new client: {}", clientDto.getName());
         Client client = convertToEntity(clientDto);
         client.setPassword(passwordEncoder.encode(client.getPassword()));
@@ -43,7 +50,7 @@ public class ClientService implements IClientService {
     @Override
     public List<ClientResponseDto> getAllClients() {
         log.info("Fetching all clients");
-        return clientRepository.findAll()
+        return clientRepository.findAllByStatus(true)
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
