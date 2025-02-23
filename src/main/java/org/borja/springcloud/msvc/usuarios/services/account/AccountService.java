@@ -1,6 +1,7 @@
 package org.borja.springcloud.msvc.usuarios.services.account;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.borja.springcloud.msvc.usuarios.dto.account.AccountRequestDto;
 import org.borja.springcloud.msvc.usuarios.dto.account.AccountResponseDto;
 import org.borja.springcloud.msvc.usuarios.exceptions.ResourceNotFoundException;
@@ -15,13 +16,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService implements IAccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
-
-    @Autowired
-    private ClientRepository clientRepository;
+    private final  AccountRepository accountRepository;
+    private final  ClientRepository clientRepository;
 
     @Override
     @Transactional

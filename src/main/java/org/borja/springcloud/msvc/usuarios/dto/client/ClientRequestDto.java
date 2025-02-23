@@ -32,6 +32,4 @@ public class ClientRequestDto {
     @NotBlank
     private String password;
 
-    @NotNull
-    private Boolean status;
 }

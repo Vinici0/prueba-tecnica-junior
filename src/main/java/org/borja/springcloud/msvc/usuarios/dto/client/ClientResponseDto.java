@@ -15,5 +15,4 @@ public class ClientResponseDto {
     private String address;
     private String phone;
     private String clientId;
-    private Boolean status;
 }

@@ -1,5 +1,6 @@
 package org.borja.springcloud.msvc.usuarios.services.client;
 
+import lombok.RequiredArgsConstructor;
 import org.borja.springcloud.msvc.usuarios.dto.client.ClientRequestDto;
 import org.borja.springcloud.msvc.usuarios.dto.client.ClientResponseDto;
 import org.borja.springcloud.msvc.usuarios.exceptions.DuplicateKeyException;
@@ -15,31 +16,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ClientService implements IClientService {
 
-    private final ClientRepository clienteRepository;
+    private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-
-    @Autowired
-    public ClientService(ClientRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
-    }
-
     @Override
-    public ClientResponseDto addClient(ClientRequestDto clienteDto) {
-        Client cliente = convertToEntity(clienteDto);
-        if (clienteRepository.findByClientId(clienteDto.getClientId()).isPresent()) {
-            throw new DuplicateKeyException("Ya existe un cliente con el ID: " + clienteDto.getClientId());
+    public ClientResponseDto addClient(ClientRequestDto clientDto) {
+        Client client = convertToEntity(clientDto);
+        if (clientRepository.findByClientId(clientDto.getClientId()).isPresent()) {
+            throw new DuplicateKeyException("Ya existe un cliente con el ID: " + clientDto.getClientId());
         }
-        cliente.setPassword(passwordEncoder.encode(cliente.getPassword()));
-        Client savedCliente = clienteRepository.save(cliente);
+        client.setPassword(passwordEncoder.encode(client.getPassword()));
+        Client savedCliente = clientRepository.save(client);
         return convertToDto(savedCliente);
     }
 
     @Override
     public List<ClientResponseDto> getAllClients() {
-        return clienteRepository.findAll()
+        return clientRepository.findAll()
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -47,30 +43,30 @@ public class ClientService implements IClientService {
 
     @Override
     public ClientResponseDto getClientById(Long id) {
-        Client cliente = clienteRepository.findById(id)
+        Client cliente = clientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
         return convertToDto(cliente);
     }
 
     @Override
-    public ClientResponseDto updateClient(Long id, ClientRequestDto clienteDto) {
-        Client clienteExistente = clienteRepository.findById(id)
+    public ClientResponseDto updateClient(Long id, ClientRequestDto clientDto) {
+        Client clienteExistente = clientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
 
-        updateEntityFromDto(clienteExistente, clienteDto);
-        if (clienteDto.getPassword() != null && !clienteDto.getPassword().isEmpty()) {
-            clienteExistente.setPassword(passwordEncoder.encode(clienteDto.getPassword()));
+        updateEntityFromDto(clienteExistente, clientDto);
+        if (clientDto.getPassword() != null && !clientDto.getPassword().isEmpty()) {
+            clienteExistente.setPassword(passwordEncoder.encode(clientDto.getPassword()));
         }
-        Client savedCliente = clienteRepository.save(clienteExistente);
+        Client savedCliente = clientRepository.save(clienteExistente);
         return convertToDto(savedCliente);
     }
 
     @Override
     public void deleteClient(Long id) {
-        if (!clienteRepository.existsById(id)) {
+        if (!clientRepository.existsById(id)) {
             throw new ResourceNotFoundException("Cliente no encontrado con id: " + id);
         }
-        clienteRepository.deleteById(id);
+        clientRepository.deleteById(id);
     }
 
     private Client convertToEntity(ClientRequestDto dto) {
@@ -83,7 +79,6 @@ public class ClientService implements IClientService {
         client.setPhone(dto.getPhone());
         client.setClientId(dto.getClientId());
         client.setPassword(dto.getPassword());
-        client.setStatus(dto.getStatus());
         return client;
     }
 
@@ -97,7 +92,6 @@ public class ClientService implements IClientService {
                 .address(client.getAddress())
                 .phone(client.getPhone())
                 .clientId(client.getClientId())
-                .status(client.getStatus())
                 .build();
     }
 
@@ -112,6 +106,5 @@ public class ClientService implements IClientService {
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             client.setPassword(dto.getPassword());
         }
-        client.setStatus(dto.getStatus());
     }
 }

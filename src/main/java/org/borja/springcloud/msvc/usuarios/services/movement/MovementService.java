@@ -1,5 +1,6 @@
 package org.borja.springcloud.msvc.usuarios.services.movement;
 
+import lombok.RequiredArgsConstructor;
 import org.borja.springcloud.msvc.usuarios.dto.movement.ReportDto;
 import org.borja.springcloud.msvc.usuarios.exceptions.InsufficientBalanceException;
 import org.borja.springcloud.msvc.usuarios.exceptions.ResourceNotFoundException;
@@ -7,7 +8,6 @@ import org.borja.springcloud.msvc.usuarios.models.Account;
 import org.borja.springcloud.msvc.usuarios.models.Movement;
 import org.borja.springcloud.msvc.usuarios.repositories.AccountRepository;
 import org.borja.springcloud.msvc.usuarios.repositories.MovementRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,17 +15,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class MovementService implements IMovementService {
 
     private final MovementRepository movementRepository;
     private final AccountRepository accountRepository;
-
-    @Autowired
-    public MovementService(MovementRepository movementRepository,
-                           AccountRepository accountRepository) {
-        this.movementRepository = movementRepository;
-        this.accountRepository = accountRepository;
-    }
 
     @Override
     public Movement addMovement(Movement movRequest) {

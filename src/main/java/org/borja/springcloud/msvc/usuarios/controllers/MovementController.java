@@ -1,6 +1,5 @@
 package org.borja.springcloud.msvc.usuarios.controllers;
 
-import org.borja.springcloud.msvc.usuarios.exceptions.ResourceNotFoundException;
 import org.borja.springcloud.msvc.usuarios.models.Movement;
 import org.borja.springcloud.msvc.usuarios.response.ApiResponse;
 import org.borja.springcloud.msvc.usuarios.services.movement.IMovementService;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 @RestController
 @RequestMapping("${api.prefix}/movimientos")
 public class MovementController {
@@ -23,70 +20,34 @@ public class MovementController {
 
     @PostMapping
     public ResponseEntity<ApiResponse> addMovement(@Validated @RequestBody Movement movRequest) {
-        try {
-            Movement nuevo = movementService.addMovement(movRequest);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(new ApiResponse("Movimiento creado exitosamente", nuevo));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND)
-                    .body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+        Movement newMovement = movementService.addMovement(movRequest);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse("Movimiento creado exitosamente", newMovement));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllMovements() {
-        try {
-            List<Movement> movimientos = movementService.getAllMovements();
-            return ResponseEntity.ok(new ApiResponse("Lista de movimientos recuperada", movimientos));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+        List<Movement> movements = movementService.getAllMovements();
+        return ResponseEntity.ok(new ApiResponse("Lista de movimientos recuperada", movements));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getMovementById(@PathVariable Long id) {
-        try {
-            Movement mov = movementService.getMovementById(id);
-            return ResponseEntity.ok(new ApiResponse("Movimiento encontrado", mov));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND)
-                    .body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+        Movement movement = movementService.getMovementById(id);
+        return ResponseEntity.ok(new ApiResponse("Movimiento encontrado", movement));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> updateMovement(@PathVariable Long id,
-                                                  @Validated @RequestBody Movement datos) {
-        try {
-            Movement actualizado = movementService.updateMovement(id, datos);
-            return ResponseEntity.ok(new ApiResponse("Movimiento actualizado exitosamente", actualizado));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND)
-                    .body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+    public ResponseEntity<ApiResponse> updateMovement(
+            @PathVariable Long id,
+            @Validated @RequestBody Movement datos) {
+        Movement updateMovement = movementService.updateMovement(id, datos);
+        return ResponseEntity.ok(new ApiResponse("Movimiento actualizado exitosamente", updateMovement));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deteleMovement(@PathVariable Long id) {
-        try {
-            movementService.deleteMovement(id);
-            return ResponseEntity.ok(new ApiResponse("Movimiento eliminado exitosamente", null));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND)
-                    .body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+    public ResponseEntity<ApiResponse> deleteMovement(@PathVariable Long id) {
+        movementService.deleteMovement(id);
+        return ResponseEntity.ok(new ApiResponse("Movimiento eliminado exitosamente", null));
     }
 }
