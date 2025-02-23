@@ -2,6 +2,7 @@ package org.borja.springcloud.msvc.usuarios.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "movements")
 public class Movement {
@@ -25,6 +27,6 @@ public class Movement {
     private Double balance;
 
     @ManyToOne
-    @JoinColumn(name="account_number", nullable = false)
+    @JoinColumn(name = "account_id", referencedColumnName = "id", nullable = false)
     private Account account;
 }

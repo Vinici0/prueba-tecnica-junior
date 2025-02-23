@@ -11,16 +11,12 @@ import org.borja.springcloud.msvc.usuarios.models.enums.AccountType;
 @Builder
 public class AccountRequestDto {
 
-    @NotBlank
-    private String accountNumber;
-
     @NotNull
     private AccountType accountType;
 
     @NotNull
     private Double initialBalance;
 
-    @NotNull
     private Boolean status;
 
     @Positive

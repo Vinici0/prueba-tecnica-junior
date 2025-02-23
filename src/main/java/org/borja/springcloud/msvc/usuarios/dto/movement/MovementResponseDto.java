@@ -8,11 +8,10 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class MovementResponseDto {
-
     private Long id;
-    private LocalDate fecha;
-    private String tipoMovimiento;
-    private Double valor;
-    private Double saldo;
-    private String numeroCuenta;
+    private LocalDate date;
+    private String movementType;
+    private Double amount;
+    private Double balance;
+    private String accountNumber;
 }

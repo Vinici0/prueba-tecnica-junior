@@ -10,6 +10,5 @@ public class AccountResponseDto {
     private String accountNumber;
     private AccountType accountType;
     private Double initialBalance;
-    private Boolean status;
     private Long clientId;
 }

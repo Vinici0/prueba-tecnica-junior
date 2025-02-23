@@ -1,21 +1,26 @@
 package org.borja.springcloud.msvc.usuarios.services.movement;
 
+import org.borja.springcloud.msvc.usuarios.dto.movement.MovementRequestDto;
+import org.borja.springcloud.msvc.usuarios.dto.movement.MovementResponseDto;
 import org.borja.springcloud.msvc.usuarios.dto.movement.ReportDto;
+import org.borja.springcloud.msvc.usuarios.dto.report.ReportResponseDto;
 import org.borja.springcloud.msvc.usuarios.models.Movement;
+import org.borja.springcloud.msvc.usuarios.repositories.interfaces.MovementReportProjection;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface IMovementService {
-    Movement addMovement(Movement movRequest);
 
-    List<Movement> getAllMovements();
+    MovementResponseDto addMovement(MovementRequestDto movRequest);
 
-    Movement getMovementById(Long id);
+    List<MovementResponseDto> getAllMovements();
 
-    Movement updateMovement(Long id, Movement data);
+    MovementResponseDto getMovementById(Long id);
+
+    MovementResponseDto updateMovement(Long id, MovementRequestDto movRequest);
 
     void deleteMovement(Long id);
 
-    ReportDto generateReport(Long clientId, LocalDate startDate, LocalDate endDate);
+    List<MovementReportProjection> getCustomReport(LocalDate startDate, LocalDate endDate, Long clientId);
 }

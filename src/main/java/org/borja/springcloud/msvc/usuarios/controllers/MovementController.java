@@ -1,6 +1,7 @@
 package org.borja.springcloud.msvc.usuarios.controllers;
 
-import org.borja.springcloud.msvc.usuarios.models.Movement;
+import org.borja.springcloud.msvc.usuarios.dto.movement.MovementRequestDto;
+import org.borja.springcloud.msvc.usuarios.dto.movement.MovementResponseDto;
 import org.borja.springcloud.msvc.usuarios.response.ApiResponse;
 import org.borja.springcloud.msvc.usuarios.services.movement.IMovementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,30 +20,30 @@ public class MovementController {
     private IMovementService movementService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> addMovement(@Validated @RequestBody Movement movRequest) {
-        Movement newMovement = movementService.addMovement(movRequest);
+    public ResponseEntity<ApiResponse> addMovement(@Validated @RequestBody MovementRequestDto movRequest) {
+        MovementResponseDto responseDto = movementService.addMovement(movRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse("Movimiento creado exitosamente", newMovement));
+                .body(new ApiResponse("Movimiento creado exitosamente", responseDto));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllMovements() {
-        List<Movement> movements = movementService.getAllMovements();
+        List<MovementResponseDto> movements = movementService.getAllMovements();
         return ResponseEntity.ok(new ApiResponse("Lista de movimientos recuperada", movements));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getMovementById(@PathVariable Long id) {
-        Movement movement = movementService.getMovementById(id);
-        return ResponseEntity.ok(new ApiResponse("Movimiento encontrado", movement));
+        MovementResponseDto responseDto = movementService.getMovementById(id);
+        return ResponseEntity.ok(new ApiResponse("Movimiento encontrado", responseDto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateMovement(
             @PathVariable Long id,
-            @Validated @RequestBody Movement datos) {
-        Movement updateMovement = movementService.updateMovement(id, datos);
-        return ResponseEntity.ok(new ApiResponse("Movimiento actualizado exitosamente", updateMovement));
+            @Validated @RequestBody MovementRequestDto movRequest) {
+        MovementResponseDto responseDto = movementService.updateMovement(id, movRequest);
+        return ResponseEntity.ok(new ApiResponse("Movimiento actualizado exitosamente", responseDto));
     }
 
     @DeleteMapping("/{id}")

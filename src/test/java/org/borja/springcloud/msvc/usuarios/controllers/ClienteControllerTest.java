@@ -38,7 +38,6 @@ public class ClienteControllerTest {
                 .identification("12345678")
                 .address("123 Fake Street")
                 .phone("987654321")
-                .clientId("client-001")
                 .password("password")
                 .build();
 

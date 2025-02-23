@@ -25,9 +25,6 @@ public class ClientService implements IClientService {
     @Override
     public ClientResponseDto addClient(ClientRequestDto clientDto) {
         Client client = convertToEntity(clientDto);
-        if (clientRepository.findByClientId(clientDto.getClientId()).isPresent()) {
-            throw new DuplicateKeyException("Ya existe un cliente con el ID: " + clientDto.getClientId());
-        }
         client.setPassword(passwordEncoder.encode(client.getPassword()));
         Client savedCliente = clientRepository.save(client);
         return convertToDto(savedCliente);
@@ -77,7 +74,6 @@ public class ClientService implements IClientService {
         client.setIdentification(dto.getIdentification());
         client.setAddress(dto.getAddress());
         client.setPhone(dto.getPhone());
-        client.setClientId(dto.getClientId());
         client.setPassword(dto.getPassword());
         return client;
     }
@@ -102,7 +98,6 @@ public class ClientService implements IClientService {
         client.setIdentification(dto.getIdentification());
         client.setAddress(dto.getAddress());
         client.setPhone(dto.getPhone());
-        client.setClientId(dto.getClientId());
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             client.setPassword(dto.getPassword());
         }

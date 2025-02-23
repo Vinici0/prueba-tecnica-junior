@@ -9,7 +9,6 @@ import org.borja.springcloud.msvc.usuarios.models.Client;
 import org.borja.springcloud.msvc.usuarios.models.Account;
 import org.borja.springcloud.msvc.usuarios.repositories.AccountRepository;
 import org.borja.springcloud.msvc.usuarios.repositories.ClientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,10 +29,8 @@ public class AccountService implements IAccountService {
 
         System.out.println("Client: " + client);
         Account account = new Account();
-        account.setAccountNumber(accountDto.getAccountNumber());
         account.setAccountType(accountDto.getAccountType());
         account.setInitialBalance(accountDto.getInitialBalance());
-        account.setStatus(accountDto.getStatus());
         account.setClient(client);
 
         account = accountRepository.save(account);
@@ -87,7 +84,7 @@ public class AccountService implements IAccountService {
                 .accountNumber(account.getAccountNumber())
                 .accountType(account.getAccountType())
                 .initialBalance(account.getInitialBalance())
-                .status(account.getStatus())
+                // .status(account.getStatus())
                 .clientId(account.getClient().getId())
                 .build();
     }

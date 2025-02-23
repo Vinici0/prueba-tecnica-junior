@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,4 +29,13 @@ public class Client extends Person {
     private String password;
 
     private Boolean status = true;
+
+    @PrePersist
+    private void generateClientId() {
+        this.clientId = generateRandomClientId();
+    }
+
+    private String generateRandomClientId() {
+        return "CLI-" + UUID.randomUUID().toString();
+    }
 }
