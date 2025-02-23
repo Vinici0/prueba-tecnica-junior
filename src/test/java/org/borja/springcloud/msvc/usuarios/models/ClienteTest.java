@@ -12,13 +12,13 @@ class ClienteTest {
     @Test
     @DisplayName("Test Crear Cliente")
     public void testCrearCliente() {
-        Cliente cliente = new Cliente();
-        cliente.setNombre("Juan Perez");
-        cliente.setContrasena("1234");
-        cliente.setEstado(true);
+        Client cliente = new Client();
+        cliente.setName("Juan Perez");
+        cliente.setPassword("1234");
+        cliente.setStatus(true);
 
         assertNotNull(cliente);
-        assertEquals("Juan Perez", cliente.getNombre());
-        assertTrue(cliente.getEstado());
+        assertEquals("Juan Perez", cliente.getName());
+        assertTrue(cliente.getStatus());
     }
 }

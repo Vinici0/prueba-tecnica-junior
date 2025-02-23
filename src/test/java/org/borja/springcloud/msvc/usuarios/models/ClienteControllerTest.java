@@ -4,10 +4,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.borja.springcloud.msvc.usuarios.controllers.ClienteController;
-import org.borja.springcloud.msvc.usuarios.dto.cliente.ClienteRequestDto;
-import org.borja.springcloud.msvc.usuarios.dto.cliente.ClienteResponseDto;
-import org.borja.springcloud.msvc.usuarios.services.cliente.ClienteService;
+import org.borja.springcloud.msvc.usuarios.controllers.ClientController;
+import org.borja.springcloud.msvc.usuarios.dto.client.ClientRequestDto;
+import org.borja.springcloud.msvc.usuarios.dto.client.ClientResponseDto;
+import org.borja.springcloud.msvc.usuarios.models.enums.Gender;
+import org.borja.springcloud.msvc.usuarios.services.client.ClientService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,86 +17,85 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(ClienteController.class)
+@WebMvcTest(ClientController.class)
 public class ClienteControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private ClienteService clienteService;
+    private ClientService clientService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
-    public void testCrearCliente() throws Exception {
-        // Configurar datos de entrada para la creación del cliente usando builder
-        ClienteRequestDto requestDto = ClienteRequestDto.builder()
-                .nombre("Cliente de Prueba")
-                .genero("Masculino")
-                .edad(30)
-                .identificacion("12345678")
-                .direccion("Calle Falsa 123")
-                .telefono("987654321")
-                .clienteId("cliente-001")
-                .contrasena("password")
-                .estado(true)
+    public void testCreateClient() throws Exception {
+        // Configure input data for client creation using builder
+        ClientRequestDto requestDto = ClientRequestDto.builder()
+                .name("Test Client")
+                .gender(Gender.valueOf("MALE"))
+                .age(30)
+                .identification("12345678")
+                .address("123 Fake Street")
+                .phone("987654321")
+                .clientId("client-001")
+                .password("password")
+                .status(true)
                 .build();
 
-        // Configurar respuesta simulada del servicio usando builder
-        ClienteResponseDto responseDto = ClienteResponseDto.builder()
+        // Configure simulated service response using builder
+        ClientResponseDto responseDto = ClientResponseDto.builder()
                 .id(1L)
-                .nombre("Cliente de Prueba")
-                .genero("Masculino")
-                .edad(30)
-                .identificacion("12345678")
-                .direccion("Calle Falsa 123")
-                .telefono("987654321")
-                .clienteId("cliente-001")
-                .estado(true)
+                .name("Test Client")
+                .gender(Gender.valueOf("MALE"))
+                .age(30)
+                .identification("12345678")
+                .address("123 Fake Street")
+                .phone("987654321")
+                .clientId("client-001")
+                .status(true)
                 .build();
 
-        // Simular el comportamiento del método crearCliente del servicio
-        Mockito.when(clienteService.crearCliente(Mockito.any(ClienteRequestDto.class)))
+        Mockito.when(clientService.addClient(Mockito.any(ClientRequestDto.class)))
                 .thenReturn(responseDto);
 
-        // Realizar la petición POST y validar la respuesta
-        mockMvc.perform(post("/api/clientes")
+        // Perform POST request and validate response
+        mockMvc.perform(post("/api/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message").value("Cliente creado exitosamente"))
+                .andExpect(jsonPath("$.message").value("Client created successfully"))
                 .andExpect(jsonPath("$.data.id").value(1))
-                .andExpect(jsonPath("$.data.nombre").value("Cliente de Prueba"));
+                .andExpect(jsonPath("$.data.name").value("Test Client"));
     }
 
     @Test
-    public void testObtenerClientePorId() throws Exception {
-        Long clienteId = 1L;
+    public void testGetClientById() throws Exception {
+        Long clientId = 1L;
 
-        // Configurar respuesta simulada del servicio usando builder
-        ClienteResponseDto responseDto = ClienteResponseDto.builder()
-                .id(clienteId)
-                .nombre("Cliente de Prueba")
-                .genero("Masculino")
-                .edad(30)
-                .identificacion("12345678")
-                .direccion("Calle Falsa 123")
-                .telefono("987654321")
-                .clienteId("cliente-001")
-                .estado(true)
+        // Configure simulated service response using builder
+        ClientResponseDto responseDto = ClientResponseDto.builder()
+                .id(clientId)
+                .name("Test Client")
+                .gender(Gender.valueOf("MALE"))
+                .age(30)
+                .identification("12345678")
+                .address("123 Fake Street")
+                .phone("987654321")
+                .clientId("client-001")
+                .status(true)
                 .build();
 
-        // Simular el comportamiento del método obtenerPorId del servicio
-        Mockito.when(clienteService.obtenerPorId(clienteId))
+        // Simulate the behavior of the service's getById method
+        Mockito.when(clientService.getClientById(clientId))
                 .thenReturn(responseDto);
 
-        // Realizar la petición GET y validar la respuesta
-        mockMvc.perform(get("/api/clientes/{id}", clienteId))
+        // Perform GET request and validate response
+        mockMvc.perform(get("/api/clients/{id}", clientId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Cliente encontrado"))
+                .andExpect(jsonPath("$.message").value("Client found"))
                 .andExpect(jsonPath("$.data.id").value(1))
-                .andExpect(jsonPath("$.data.nombre").value("Cliente de Prueba"));
+                .andExpect(jsonPath("$.data.name").value("Test Client"));
     }
 }
