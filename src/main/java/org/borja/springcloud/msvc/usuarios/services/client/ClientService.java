@@ -1,37 +1,48 @@
 package org.borja.springcloud.msvc.usuarios.services.client;
 
+
+// Java core imports
+import java.util.List;
+import java.util.stream.Collectors;
+
+// Lombok imports
 import lombok.RequiredArgsConstructor;
-import org.borja.springcloud.msvc.usuarios.dto.client.ClientRequestDto;
-import org.borja.springcloud.msvc.usuarios.dto.client.ClientResponseDto;
-import org.borja.springcloud.msvc.usuarios.exceptions.DuplicateKeyException;
-import org.borja.springcloud.msvc.usuarios.exceptions.ResourceNotFoundException;
-import org.borja.springcloud.msvc.usuarios.models.Client;
-import org.borja.springcloud.msvc.usuarios.repositories.ClientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+// Spring framework imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+// Application imports
+import org.borja.springcloud.msvc.usuarios.dto.client.ClientRequestDto;
+import org.borja.springcloud.msvc.usuarios.dto.client.ClientResponseDto;
+import org.borja.springcloud.msvc.usuarios.exceptions.ResourceNotFoundException;
+import org.borja.springcloud.msvc.usuarios.models.Client;
+import org.borja.springcloud.msvc.usuarios.repositories.ClientRepository;
 
 @Service
 @RequiredArgsConstructor
 public class ClientService implements IClientService {
 
+    private static final Logger log = LoggerFactory.getLogger(ClientService.class);
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public ClientResponseDto addClient(ClientRequestDto clientDto) {
+        log.info("Adding new client: {}", clientDto.getName());
         Client client = convertToEntity(clientDto);
         client.setPassword(passwordEncoder.encode(client.getPassword()));
-        Client savedCliente = clientRepository.save(client);
-        return convertToDto(savedCliente);
+        Client savedClient = clientRepository.save(client);
+        log.info("Client created successfully with ID: {}", savedClient.getId());
+        return convertToDto(savedClient);
     }
 
     @Override
     public List<ClientResponseDto> getAllClients() {
+        log.info("Fetching all clients");
         return clientRepository.findAll()
                 .stream()
                 .map(this::convertToDto)
@@ -40,30 +51,44 @@ public class ClientService implements IClientService {
 
     @Override
     public ClientResponseDto getClientById(Long id) {
-        Client cliente = clientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
-        return convertToDto(cliente);
+        log.info("Fetching client with ID: {}", id);
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Client not found with ID: {}", id);
+                    return new ResourceNotFoundException("Cliente no encontrado con id: " + id);
+                });
+        return convertToDto(client);
     }
 
     @Override
     public ClientResponseDto updateClient(Long id, ClientRequestDto clientDto) {
-        Client clienteExistente = clientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
+        log.info("Updating client with ID: {}", id);
+        Client existingClient = clientRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Client not found with ID: {}", id);
+                    return new ResourceNotFoundException("Cliente no encontrado con id: " + id);
+                });
 
-        updateEntityFromDto(clienteExistente, clientDto);
+        updateEntityFromDto(existingClient, clientDto);
         if (clientDto.getPassword() != null && !clientDto.getPassword().isEmpty()) {
-            clienteExistente.setPassword(passwordEncoder.encode(clientDto.getPassword()));
+            existingClient.setPassword(passwordEncoder.encode(clientDto.getPassword()));
         }
-        Client savedCliente = clientRepository.save(clienteExistente);
-        return convertToDto(savedCliente);
+        Client savedClient = clientRepository.save(existingClient);
+        log.info("Client updated successfully with ID: {}", savedClient.getId());
+        return convertToDto(savedClient);
     }
 
     @Override
     public void deleteClient(Long id) {
-        if (!clientRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Cliente no encontrado con id: " + id);
-        }
-        clientRepository.deleteById(id);
+        log.info("Disabling client with ID: {}", id);
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Client not found with ID: {}", id);
+                    return new ResourceNotFoundException("Cliente no encontrado con id: " + id);
+                });
+        client.setStatus(false);
+        clientRepository.save(client);
+        log.info("Client disabled successfully with ID: {}", id);
     }
 
     private Client convertToEntity(ClientRequestDto dto) {

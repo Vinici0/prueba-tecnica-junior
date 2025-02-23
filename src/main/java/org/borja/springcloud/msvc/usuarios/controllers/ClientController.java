@@ -1,15 +1,21 @@
 package org.borja.springcloud.msvc.usuarios.controllers;
 
+// Java core imports
 import java.util.List;
-import org.borja.springcloud.msvc.usuarios.dto.client.ClientRequestDto;
-import org.borja.springcloud.msvc.usuarios.dto.client.ClientResponseDto;
-import org.borja.springcloud.msvc.usuarios.response.ApiResponse;
-import org.borja.springcloud.msvc.usuarios.services.client.IClientService;
+
+// Spring framework imports
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+// Application imports
+import org.borja.springcloud.msvc.usuarios.dto.client.ClientRequestDto;
+import org.borja.springcloud.msvc.usuarios.dto.client.ClientResponseDto;
+import org.borja.springcloud.msvc.usuarios.response.ApiResponse;
+import org.borja.springcloud.msvc.usuarios.services.client.IClientService;
+
 
 @RestController
 @RequestMapping("${api.prefix}/clientes")

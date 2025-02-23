@@ -19,10 +19,10 @@ public interface MovementRepository extends JpaRepository<Movement, Long> {
                 p.name AS cliente,
                 a.account_number AS numeroCuenta,
                 a.account_type AS tipo,
-                a.initial_balance AS SaldoDisponible,
+                a.initial_balance AS SaldoInicial,
                 a.status AS estado,
                 m.amount AS movimiento,
-                m.balance AS saldoInicial
+                m.balance AS SaldoDisponible
             FROM movements m
                 INNER JOIN accounts a ON m.account_id = a.id
                 INNER JOIN clients c ON a.client_id = c.id

@@ -1,10 +1,11 @@
 package org.borja.springcloud.msvc.usuarios.controllers;
 
-import org.borja.springcloud.msvc.usuarios.dto.movement.ReportDto;
-import org.borja.springcloud.msvc.usuarios.dto.report.ReportResponseDto;
-import org.borja.springcloud.msvc.usuarios.repositories.interfaces.MovementReportProjection;
-import org.borja.springcloud.msvc.usuarios.response.ApiResponse;
-import org.borja.springcloud.msvc.usuarios.services.movement.IMovementService;
+
+// Java core imports
+import java.time.LocalDate;
+import java.util.List;
+
+// Spring framework imports
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.util.List;
+// Application imports
+import org.borja.springcloud.msvc.usuarios.repositories.interfaces.MovementReportProjection;
+import org.borja.springcloud.msvc.usuarios.response.ApiResponse;
+import org.borja.springcloud.msvc.usuarios.services.movement.IMovementService;
+
 
 @RestController
 @RequestMapping("${api.prefix}/reportes")

@@ -1,16 +1,20 @@
 package org.borja.springcloud.msvc.usuarios.controllers;
 
-import org.borja.springcloud.msvc.usuarios.dto.movement.MovementRequestDto;
-import org.borja.springcloud.msvc.usuarios.dto.movement.MovementResponseDto;
-import org.borja.springcloud.msvc.usuarios.response.ApiResponse;
-import org.borja.springcloud.msvc.usuarios.services.movement.IMovementService;
+// Java core imports
+import java.util.List;
+
+// Spring framework imports
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+// Application imports
+import org.borja.springcloud.msvc.usuarios.dto.movement.MovementRequestDto;
+import org.borja.springcloud.msvc.usuarios.dto.movement.MovementResponseDto;
+import org.borja.springcloud.msvc.usuarios.response.ApiResponse;
+import org.borja.springcloud.msvc.usuarios.services.movement.IMovementService;
 
 @RestController
 @RequestMapping("${api.prefix}/movimientos")

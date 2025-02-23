@@ -5,8 +5,8 @@ public interface MovementReportProjection {
     String getCliente();
     String getNumeroCuenta();
     String getTipo();
-    Double getSaldoDisponible();
+    Double getSaldoInicial();
     Boolean getEstado();
     Double getMovimiento();
-    Double getSaldoInicial();
+    Double getSaldoDisponible();
 }
