@@ -1,23 +1,24 @@
 package org.borja.springcloud.msvc.usuarios.controllers;
 
-
+// Java core imports
 import java.util.List;
 
-import org.borja.springcloud.msvc.usuarios.dto.client.ClientRequestDto;
+// Spring framework imports
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+// Application imports
+import org.borja.springcloud.msvc.usuarios.dto.client.ClientRequestDto;
 import org.borja.springcloud.msvc.usuarios.dto.client.ClientResponseDto;
-import org.borja.springcloud.msvc.usuarios.exceptions.ResourceNotFoundException;
 import org.borja.springcloud.msvc.usuarios.response.ApiResponse;
 import org.borja.springcloud.msvc.usuarios.services.client.IClientService;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
-@RequestMapping("${api.prefix}/clients")
+@RequestMapping("${api.prefix}/clientes")
 public class ClientController {
 
     @Autowired
@@ -25,67 +26,33 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<ApiResponse> addClient(@Validated @RequestBody ClientRequestDto clientDto) {
-        try {
-            ClientResponseDto newClient = clientService.addClient(clientDto);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(new ApiResponse("Cliente creado exitosamente", newClient));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+        ClientResponseDto newClient = clientService.addClient(clientDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse("Cliente creado exitosamente", newClient));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllClients() {
-        try {
-            List<ClientResponseDto> clients = clientService.getAllClients();
-            return ResponseEntity.ok(new ApiResponse("Lista de clientes recuperada", clients));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+        List<ClientResponseDto> clients = clientService.getAllClients();
+        return ResponseEntity.ok(new ApiResponse("Lista de clientes recuperada", clients));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getClientById(@PathVariable Long id) {
-        try {
-            ClientResponseDto client = clientService.getClientById(id);
-            return ResponseEntity.ok(new ApiResponse("Cliente encontrado", client));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND)
-                    .body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+        ClientResponseDto client = clientService.getClientById(id);
+        return ResponseEntity.ok(new ApiResponse("Cliente encontrado", client));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> update(@PathVariable Long id,
-                                              @Validated @RequestBody ClientRequestDto clientDto) {
-        try {
-            ClientResponseDto updated = clientService.updateClient(id, clientDto);
-            return ResponseEntity.ok(new ApiResponse("Cliente actualizado exitosamente", updated));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND)
-                    .body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+    public ResponseEntity<ApiResponse> updateClient(@PathVariable Long id,
+                                                    @Validated @RequestBody ClientRequestDto clientDto) {
+        ClientResponseDto updatedClient = clientService.updateClient(id, clientDto);
+        return ResponseEntity.ok(new ApiResponse("Cliente actualizado exitosamente", updatedClient));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteClient(@PathVariable Long id) {
-        try {
-            clientService.deleteClient(id);
-            return ResponseEntity.ok(new ApiResponse("Cliente eliminado exitosamente", null));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND)
-                    .body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
+        clientService.deleteClient(id);
+        return ResponseEntity.ok(new ApiResponse("Cliente eliminado exitosamente", null));
     }
 }

@@ -9,12 +9,12 @@ import lombok.Data;
 @Builder
 public class MovementRequestDto {
 
-    @NotBlank
-    private String tipoMovimiento;
+    @NotNull(message = "El número de cuenta es obligatorio")
+    private String accountNumber;
 
-    @NotNull
-    private Double valor;
+    @NotNull(message = "El tipo de movimiento es obligatorio")
+    private String movementType;
 
-    @NotBlank
-    private String numeroCuenta;
+    @NotNull(message = "El monto es obligatorio")
+    private Double amount;
 }

@@ -1,49 +1,62 @@
 package org.borja.springcloud.msvc.usuarios.services.account;
 
-import jakarta.transaction.Transactional;
-import org.borja.springcloud.msvc.usuarios.dto.account.AccountRequestDto;
-import org.borja.springcloud.msvc.usuarios.dto.account.AccountResponseDto;
-import org.borja.springcloud.msvc.usuarios.exceptions.ResourceNotFoundException;
-import org.borja.springcloud.msvc.usuarios.models.Client;
-import org.borja.springcloud.msvc.usuarios.models.Account;
-import org.borja.springcloud.msvc.usuarios.repositories.AccountRepository;
-import org.borja.springcloud.msvc.usuarios.repositories.ClientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+// Java core imports
 import java.util.List;
 import java.util.stream.Collectors;
 
+// Jakarta imports
+import jakarta.transaction.Transactional;
+
+// Lombok imports
+import lombok.RequiredArgsConstructor;
+
+// Spring framework imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+// Application imports
+import org.borja.springcloud.msvc.usuarios.dto.account.AccountRequestDto;
+import org.borja.springcloud.msvc.usuarios.dto.account.AccountResponseDto;
+import org.borja.springcloud.msvc.usuarios.exceptions.ResourceNotFoundException;
+import org.borja.springcloud.msvc.usuarios.models.Account;
+import org.borja.springcloud.msvc.usuarios.models.Client;
+import org.borja.springcloud.msvc.usuarios.repositories.AccountRepository;
+import org.borja.springcloud.msvc.usuarios.repositories.ClientRepository;
+
+
 @Service
+@RequiredArgsConstructor
 public class AccountService implements IAccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
-
-    @Autowired
-    private ClientRepository clientRepository;
+    private static final Logger log = LoggerFactory.getLogger(AccountService.class);
+    private final AccountRepository accountRepository;
+    private final ClientRepository clientRepository;
 
     @Override
     @Transactional
     public AccountResponseDto addAccount(AccountRequestDto accountDto) {
-        Client client = clientRepository.findById(accountDto.getClientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + accountDto.getClientId()));
+        log.info("Adding new account for client ID: {}", accountDto.getClientId());
+        Client client = clientRepository.findByClientIdAndStatus(accountDto.getClientId(), true)
+                .orElseThrow(() -> {
+                    log.warn("Client not found with ID: {}", accountDto.getClientId());
+                    return new ResourceNotFoundException("Client not found with ID: " + accountDto.getClientId());
+                });
 
-        System.out.println("Client: " + client);
         Account account = new Account();
-        account.setAccountNumber(accountDto.getAccountNumber());
         account.setAccountType(accountDto.getAccountType());
         account.setInitialBalance(accountDto.getInitialBalance());
-        account.setStatus(accountDto.getStatus());
         account.setClient(client);
 
         account = accountRepository.save(account);
+        log.info("Account created successfully with account number: {}", account.getAccountNumber());
         return mapToResponseDto(account);
     }
 
     @Override
     @Transactional
     public List<AccountResponseDto> getAllAccounts() {
+        log.info("Fetching all accounts");
         return accountRepository.findAll().stream()
                 .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
@@ -52,19 +65,30 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional
     public AccountResponseDto getAccountByNumber(String accountNumber) {
+        log.info("Fetching account with number: {}", accountNumber);
         Account account = accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found with number: " + accountNumber));
+                .orElseThrow(() -> {
+                    log.warn("Account not found with number: {}", accountNumber);
+                    return new ResourceNotFoundException("Account not found with number: " + accountNumber);
+                });
         return mapToResponseDto(account);
     }
 
     @Override
     @Transactional
     public AccountResponseDto updateAccount(String accountNumber, AccountRequestDto accountDto) {
+        log.info("Updating account with number: {}", accountNumber);
         Account account = accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found with number: " + accountNumber));
+                .orElseThrow(() -> {
+                    log.warn("Account not found with number: {}", accountNumber);
+                    return new ResourceNotFoundException("Account not found with number: " + accountNumber);
+                });
 
         Client client = clientRepository.findById(accountDto.getClientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + accountDto.getClientId()));
+                .orElseThrow(() -> {
+                    log.warn("Client not found with ID: {}", accountDto.getClientId());
+                    return new ResourceNotFoundException("Client not found with ID: " + accountDto.getClientId());
+                });
 
         account.setAccountType(accountDto.getAccountType());
         account.setInitialBalance(accountDto.getInitialBalance());
@@ -72,15 +96,21 @@ public class AccountService implements IAccountService {
         account.setClient(client);
 
         account = accountRepository.save(account);
+        log.info("Account updated successfully: {}", account.getAccountNumber());
         return mapToResponseDto(account);
     }
 
     @Override
     @Transactional
     public void deleteAccount(String accountNumber) {
+        log.info("Deleting account with number: {}", accountNumber);
         Account account = accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found with number: " + accountNumber));
+                .orElseThrow(() -> {
+                    log.warn("Account not found with number: {}", accountNumber);
+                    return new ResourceNotFoundException("Account not found with number: " + accountNumber);
+                });
         accountRepository.delete(account);
+        log.info("Account deleted successfully: {}", accountNumber);
     }
 
     private AccountResponseDto mapToResponseDto(Account account) {
@@ -88,7 +118,6 @@ public class AccountService implements IAccountService {
                 .accountNumber(account.getAccountNumber())
                 .accountType(account.getAccountType())
                 .initialBalance(account.getInitialBalance())
-                .status(account.getStatus())
                 .clientId(account.getClient().getId())
                 .build();
     }

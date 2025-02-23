@@ -27,11 +27,6 @@ public class ClientRequestDto {
     private String phone;
 
     @NotBlank
-    private String clientId;
-
-    @NotBlank
     private String password;
 
-    @NotNull
-    private Boolean status;
 }

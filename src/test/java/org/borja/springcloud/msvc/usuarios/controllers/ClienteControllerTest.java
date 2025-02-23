@@ -1,10 +1,9 @@
-package org.borja.springcloud.msvc.usuarios.models;
+package org.borja.springcloud.msvc.usuarios.controllers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.borja.springcloud.msvc.usuarios.controllers.ClientController;
 import org.borja.springcloud.msvc.usuarios.dto.client.ClientRequestDto;
 import org.borja.springcloud.msvc.usuarios.dto.client.ClientResponseDto;
 import org.borja.springcloud.msvc.usuarios.models.enums.Gender;
@@ -31,7 +30,7 @@ public class ClienteControllerTest {
 
     @Test
     public void testCreateClient() throws Exception {
-        // Configure input data for client creation using builder
+        // Se crea un objeto de tipo ClientRequestDto
         ClientRequestDto requestDto = ClientRequestDto.builder()
                 .name("Test Client")
                 .gender(Gender.valueOf("MALE"))
@@ -39,9 +38,7 @@ public class ClienteControllerTest {
                 .identification("12345678")
                 .address("123 Fake Street")
                 .phone("987654321")
-                .clientId("client-001")
                 .password("password")
-                .status(true)
                 .build();
 
         // Configure simulated service response using builder
@@ -54,18 +51,17 @@ public class ClienteControllerTest {
                 .address("123 Fake Street")
                 .phone("987654321")
                 .clientId("client-001")
-                .status(true)
                 .build();
 
         Mockito.when(clientService.addClient(Mockito.any(ClientRequestDto.class)))
                 .thenReturn(responseDto);
 
         // Perform POST request and validate response
-        mockMvc.perform(post("/api/clients")
+        mockMvc.perform(post("/api/clientes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message").value("Client created successfully"))
+                .andExpect(jsonPath("$.message").value("Cliente creado exitosamente"))
                 .andExpect(jsonPath("$.data.id").value(1))
                 .andExpect(jsonPath("$.data.name").value("Test Client"));
     }
@@ -84,7 +80,6 @@ public class ClienteControllerTest {
                 .address("123 Fake Street")
                 .phone("987654321")
                 .clientId("client-001")
-                .status(true)
                 .build();
 
         // Simulate the behavior of the service's getById method
@@ -92,9 +87,9 @@ public class ClienteControllerTest {
                 .thenReturn(responseDto);
 
         // Perform GET request and validate response
-        mockMvc.perform(get("/api/clients/{id}", clientId))
+        mockMvc.perform(get("/api/clientes/{id}", clientId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Client found"))
+                .andExpect(jsonPath("$.message").value("Cliente encontrado"))
                 .andExpect(jsonPath("$.data.id").value(1))
                 .andExpect(jsonPath("$.data.name").value("Test Client"));
     }

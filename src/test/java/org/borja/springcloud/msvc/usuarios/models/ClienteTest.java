@@ -11,11 +11,10 @@ class ClienteTest {
 
     @Test
     @DisplayName("Test Crear Cliente")
-    public void testCrearCliente() {
+    public void testAddClient() {
         Client cliente = new Client();
         cliente.setName("Juan Perez");
         cliente.setPassword("1234");
-        cliente.setStatus(true);
 
         assertNotNull(cliente);
         assertEquals("Juan Perez", cliente.getName());
